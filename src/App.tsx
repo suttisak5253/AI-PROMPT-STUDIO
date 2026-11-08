@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type Character = { id:string; name:string; role:string; age:string; face:string; body:string; skin:string; hair:string; outfit:string; wearing:string; shoes:string; accessories:string; props:string; voice:string; personality:string; };
 type Location = { id:string; name:string; architecture:string; layout:string; colors:string; props:string; lighting:string; time:string; weather:string; };
@@ -20,7 +20,7 @@ export default function App(){
  const [editingLoc,setEditingLoc]=useState<Location|null>(null);
  const [importText,setImportText]=useState('');
  useEffect(()=>{localStorage.setItem('aps-projects',JSON.stringify(projects));},[projects]);
- useEffect(()=>{setSaved(false);const t=setTimeout(()=>{setProject(p=>({...p,updated:new Date().toISOString()}));setSaved(true);},500);return()=>clearTimeout(t);},[project.title,project.premise,project.genres,project.mechanics,project.characters,project.locations,project.clips,project.platform,project.ratio,project.totalClips]);
+ useEffect(()=>{setSaved(false);const t=setTimeout(()=>{const next={...project,updated:new Date().toISOString()};setProject(next);setProjects(old=>[next,...old.filter(x=>x.id!==next.id)]);setSaved(true);},500);return()=>clearTimeout(t);},[project.title,project.premise,project.genres,project.mechanics,project.characters,project.locations,project.clips,project.platform,project.ratio,project.totalClips]);
  const patch=(v:Partial<Project>)=>setProject(p=>({...p,...v}));
  const persist=()=>{setProjects(old=>[project,...old.filter(x=>x.id!==project.id)]);setNotice('บันทึกโปรเจกต์แล้ว');setTimeout(()=>setNotice(''),2200);};
  const active=project.clips.find(c=>c.id===project.activeClip)||project.clips[0];
